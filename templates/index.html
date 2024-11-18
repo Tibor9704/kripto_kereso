@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kriptovaluta kereső</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEJ08T7K7K7gpmZo5E5m5lZ5G5r5r5f5r5l4e5aF5f5r5r5Z5T5q5V5u5x5x5" crossorigin="anonymous">
+    <link href="{{ url_for('static', filename='styles.css') }}" rel="stylesheet">
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+<body class="bg-dark text-white">
+
+    <div class="container py-4">
+        <h1 class="text-center mb-4">Kriptovaluta Kereső</h1>
+        
+        <form method="POST" class="mb-4">
+            <div class="input-group">
+                <span class="input-group-text bg-secondary text-white" id="currency-label">Valuta neve:</span>
+                <input type="text" id="currency" name="currency" class="form-control" placeholder="Pl. BTC" required>
+                <button class="btn btn-primary" type="submit">Keresés</button>
+            </div>
+        </form>
+
+        {% if price %}
+            <div class="alert alert-success">
+                <h2>{{ currency }} árfolyama: {{ price | round(2) }} USD</h2>
+            </div>
+        {% elif error %}
+            <div class="alert alert-danger">
+                <p>{{ error }}</p>
+            </div>
+        {% endif %}
+
+        <h3>Jelenlegi kriptovaluta árfolyamok:</h3>
+        <ul class="list-group mb-4">
+            {% for currency, data in random_prices.items() %}
+                <li class="list-group-item d-flex justify-content-between align-items-center bg-secondary text-white">
+                    <span>{{ currency }}</span>
+                    <span>
+                        {{ data.price | round(2) }} USD
+                        {% if data.percent_change is not none %}
+                            <span class="badge" style="background-color: {% if data.percent_change >= 0 %}green{% else %}red{% endif %};">
+                                {{ data.percent_change | round(2) }}%
+                            </span>
+                        {% else %}
+                            <span class="badge bg-secondary">N/A</span>
+                        {% endif %}
+                    </span>
+                </li>
+            {% endfor %}
+        </ul>
+
+        <h3>Top 10 lista:</h3>
+        <form method="GET" class="mb-4">
+            <button type="submit" name="action" value="losers" class="btn btn-danger">Top veszteségek</button>
+            <button type="submit" name="action" value="gainers" class="btn btn-success">Top nyereségek</button>
+        </form>
+
+        {% if top_10_losers %}
+            <h3>Veszteséges valuták</h3>
+            <ul class="list-group mb-4">
+                {% for loser in top_10_losers %}
+                    <li class="list-group-item bg-danger text-white">
+                        {{ loser[0] }}: {{ loser[1] | round(2) }} USD, Változás: {{ loser[2] | round(2) }}%
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        {% if top_10_gainers %}
+            <h3>Nyereséges valuták</h3>
+            <ul class="list-group mb-4">
+                {% for winner in top_10_gainers %}
+                    <li class="list-group-item bg-success text-white">
+                        {{ winner[0] }}: {{ winner[1] | round(2) }} USD, Változás: {{ winner[2] | round(2) }}%
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        {% if plot_div %}
+            <h3 class="text-center">24 órás árfolyamváltozás</h3>
+            <div id="graph" class="mb-4"></div>
+            <script>
+                var plotData = {{ plot_div | safe }};
+                Plotly.newPlot('graph', plotData);
+            </script>
+        {% endif %}
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz4fnFO9gybP6c0b8zVv4QI1l6zZfW/JfyIFpOrflm5bV0VXj6fiZYQFxC" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js" integrity="sha384-GLhlTQ8iRZy2jgegimVpP3y5rNf4uWlEdZ1K5yX9cEx8v6X5VrAwwZ6f9n4p9F5p6" crossorigin="anonymous"></script>
+</body>
+</html>
