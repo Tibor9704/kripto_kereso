@@ -1,0 +1,8 @@
+# Szükséges telepítendő Python csomagok a script futtatásához
+
+Flask==2.3.2              
+mysql-connector-python     
+plotly==5.15.0             
+requests==2.31.0          
+
+
