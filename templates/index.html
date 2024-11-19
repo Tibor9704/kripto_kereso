@@ -50,14 +50,14 @@
             {% endfor %}
         </ul>
 
-        <h3>Top 10 lista:</h3>
+        <h3>Érték nvekedés/csökkenés:</h3>
         <form method="GET" class="mb-4">
-            <button type="submit" name="action" value="losers" class="btn btn-danger">Top veszteségek</button>
-            <button type="submit" name="action" value="gainers" class="btn btn-success">Top nyereségek</button>
+            <button type="submit" name="action" value="losers" class="btn btn-danger">Zuhant</button>
+            <button type="submit" name="action" value="gainers" class="btn btn-success">Emelkedett</button>
         </form>
 
         {% if top_10_losers %}
-            <h3>Veszteséges valuták</h3>
+            <h3>Érték csökkent valuták</h3>
             <ul class="list-group mb-4">
                 {% for loser in top_10_losers %}
                     <li class="list-group-item bg-danger text-white">
@@ -68,7 +68,7 @@
         {% endif %}
 
         {% if top_10_gainers %}
-            <h3>Nyereséges valuták</h3>
+            <h3>Érték növekedett valuták</h3>
             <ul class="list-group mb-4">
                 {% for winner in top_10_gainers %}
                     <li class="list-group-item bg-success text-white">
